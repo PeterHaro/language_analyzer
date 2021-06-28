@@ -1,6 +1,7 @@
 from enum import Enum
 
 import nltk
+import URLExtract
 from nltk import RegexpTokenizer
 from nltk.corpus import stopwords
 from transformers import pipeline
@@ -24,6 +25,7 @@ class LanguageAnalyzer(object):
         nltk.download('vader_lexicon')
         self.candidate_labels = ['positiv', 'negativ']
         self.hypothesis_template = 'Dette eksempelet er {}.'
+        self.extractor = URLExtract()
         if should_perform_zero_shot_analysis:
             self.classifier = pipeline("zero-shot-classification",
                                        model="NbAiLab/nb-bert-base-mnli",
@@ -107,6 +109,9 @@ class LanguageAnalyzer(object):
         :param comment: Comment and/or post text ready for analysis
         :return: Cleaned comment without any stopwords etc
         """
+        urls = self.extractor.find_urls(comment)
+        for url in urls:
+            comment.replace(url, "")
         cleaned_comment = self.punctuation_tokenizer.tokenize(comment)
         cleaned_comment = [word for word in cleaned_comment if not word in self.stop_words]
         return " ".join(cleaned_comment)
