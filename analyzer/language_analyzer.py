@@ -1,4 +1,4 @@
-from enum import Enum
+from enum import Enum, IntEnum
 
 import nltk
 import URLExtract
@@ -7,7 +7,7 @@ from nltk.corpus import stopwords
 from transformers import pipeline
 
 
-class NeuralNetRuntime(Enum):
+class NeuralNetRuntime(IntEnum):
     USE_GPU = 0,
     USE_CPU = 1
 
